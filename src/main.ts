@@ -5,7 +5,7 @@ import * as dom from './dom';
 import * as lang from './lang';
 import { Locale } from './lang';
 import { helpers } from 'brackets-manager';
-import { convertData, toornament } from './toornament';
+import { convertData, ToornamentStage, ToornamentMatch } from './toornament';
 import {
     Config,
     OriginHint,
@@ -165,8 +165,8 @@ export class BracketsViewer {
      */
     public async renderToornament(data: {
         tournament_id: number,
-        stages: toornament.Stage[];
-        matches: toornament.Match[];
+        stages: ToornamentStage[];
+        matches: ToornamentMatch[];
     }, config?: Partial<Config>): Promise<void> {
         const convertedData = convertData(data);
         await this.render({

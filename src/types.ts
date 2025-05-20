@@ -4,7 +4,7 @@ import { InMemoryDatabase } from 'brackets-memory-db';
 import { BracketsViewer } from './main';
 import { BracketsManager } from 'brackets-manager';
 import { ToI18nKey, Translator } from './lang';
-import { ConvertResult, toornament } from './toornament/types';
+import { ConvertResult, ToornamentStage, ToornamentMatch } from './toornament';
 
 declare global {
     interface Window {
@@ -15,8 +15,8 @@ declare global {
         updateFormCreator: (configuration: FormConfiguration, changeCallable: CallbackFunction) => void,
         convertData: (data: {
             tournament_id: number,
-            stages: toornament.Stage[];
-            matches: toornament.Match[];
+            stages: ToornamentStage[];
+            matches: ToornamentMatch[];
         }) => ConvertResult,
     }
 

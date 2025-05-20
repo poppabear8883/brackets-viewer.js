@@ -1,12 +1,83 @@
-import { Participant, ParticipantResult, RoundRobinMode, StageSettings, StageType, Status } from 'brackets-model';
-import { ConvertResult, Database, Mapping, toornament } from './types';
+import { Participant, ParticipantResult, RoundRobinMode, StageSettings, StageType, Status, GrandFinalType, Match as BaseMatch, MatchGame, Result, Stage } from 'brackets-model';
 
+// Types from toornament/types.ts
+// Extend the Match interface to include metadata
+export interface Match extends BaseMatch {
+    metadata?: {
+        original_match_id: string;
+        [key: string]: any;
+    };
+}
+
+export interface ConvertResult {
+    database: Database,
+    mappings: Record<string, Mapping>,
+}
+
+export interface Database {
+    stage: Stage[],
+    match: Match[],
+    match_game: MatchGame[],
+    participant: Participant[],
+}
+
+export type Mapping = { [id: string]: number };
+
+// Toornament types as separate exports instead of namespace
+export type ToornamentPairingMethod = 'manual' | 'standard' | 'double_standard';
+export type ToornamentStageType = 'single_elimination' | 'double_elimination' | 'pools';
+export type ToornamentStatus = 'pending' | 'running' | 'completed';
+
+export interface ToornamentStageSettings {
+    size: number;
+    nb_groups: number;
+    pairing_method: ToornamentPairingMethod;
+    grand_final: GrandFinalType;
+    third_decider?: boolean;
+    skip_round1?: boolean;
+}
+
+export interface ToornamentStage {
+    id: string;
+    number: number;
+    name: string;
+    type: ToornamentStageType;
+    settings: ToornamentStageSettings;
+}
+
+export interface ToornamentParticipant {
+    id: string;
+    name: string;
+}
+
+export interface ToornamentOpponent {
+    number: number;
+    position: number;
+    participant: ToornamentParticipant | null;
+    result: Result | null;
+    forfeit: boolean;
+    score?: number | null;
+    source_node_id?: string | null;
+}
+
+export interface ToornamentMatch {
+    id: string;
+    stage_id: string;
+    group_id: string;
+    round_id: string;
+    number: number;
+    type: string;
+    status: ToornamentStatus;
+    opponents: ToornamentOpponent[];
+}
+
+// Functions from toornament/convert.ts
 /**
  * Converts a Toornament stage type.
  * 
  * @param type Type of the stage.
  */
-export function convertStageType(type: toornament.StageType): StageType {
+export function convertStageType(type: ToornamentStageType): StageType {
     switch (type) {
         case 'pools':
             return 'round_robin';
@@ -23,7 +94,7 @@ export function convertStageType(type: toornament.StageType): StageType {
  * 
  * @param settings Settings of the stage.
  */
-export function convertStageSettings(settings: toornament.StageSettings): StageSettings {
+export function convertStageSettings(settings: ToornamentStageSettings): StageSettings {
     return {
         size: settings.size,
         groupCount: settings.nb_groups,
@@ -39,7 +110,7 @@ export function convertStageSettings(settings: toornament.StageSettings): StageS
  * 
  * @param method Pairing method.
  */
-export function convertRoundRobinMode(method: toornament.PairingMethod): RoundRobinMode | undefined {
+export function convertRoundRobinMode(method: ToornamentPairingMethod): RoundRobinMode | undefined {
     switch (method) {
         case 'standard':
             return 'simple';
@@ -55,7 +126,7 @@ export function convertRoundRobinMode(method: toornament.PairingMethod): RoundRo
  * 
  * @param status Status of the match.
  */
-export function convertMatchStatus(status: toornament.Status): Status {
+export function convertMatchStatus(status: ToornamentStatus): Status {
     switch (status) {
         case 'pending':
             // Use waiting because it ressembles to the name.
@@ -65,6 +136,8 @@ export function convertMatchStatus(status: toornament.Status): Status {
         case 'completed':
             // Use completed because it ressembles to the name.
             return Status.Completed;
+        default:
+            return Status.Waiting; // Default to waiting as a fallback
     }
 }
 
@@ -74,7 +147,7 @@ export function convertMatchStatus(status: toornament.Status): Status {
  * @param id ID of the participant.
  * @param participant Toornament participant.
  */
-export function convertParticipant(id: number, participant: toornament.Participant): Participant {
+export function convertParticipant(id: number, participant: ToornamentParticipant): Participant {
     return {
         id,
         name: participant.name,
@@ -89,7 +162,7 @@ export function convertParticipant(id: number, participant: toornament.Participa
  * @param source Source of the participant.
  * @param result Result of the participant.
  */
-export function convertParticipantResult(id: number | null, source: number | undefined, result: toornament.Opponent): ParticipantResult {
+export function convertParticipantResult(id: number | null, source: number | undefined, result: ToornamentOpponent): ParticipantResult {
     return {
         id,
         position: source,
@@ -128,8 +201,8 @@ export function idFactory(): {
  */
 export function convertData(data: {
     tournament_id: number,
-    stages: toornament.Stage[];
-    matches: toornament.Match[];
+    stages: ToornamentStage[];
+    matches: ToornamentMatch[];
 }): ConvertResult {
     const db: Database = {
         stage: [],
@@ -163,7 +236,7 @@ export function convertData(data: {
      * 
      * @param result Result of the participant.
      */
-    function findSourcePosition(result: toornament.Opponent): number | undefined {
+    function findSourcePosition(result: ToornamentOpponent): number | undefined {
         if (!result.source_node_id)
             return undefined;
 

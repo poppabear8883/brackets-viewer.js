@@ -1,7 +1,7 @@
 import { InMemoryDatabase } from 'brackets-memory-db';
 import { BracketsManager } from 'brackets-manager';
 import { BracketsViewer } from './main';
-import { convertData, toornament } from './toornament';
+import { convertData } from './toornament';
 
 window.bracketsViewer = new BracketsViewer();
 window.inMemoryDatabase = new InMemoryDatabase();
@@ -24,4 +24,4 @@ export {
 } from './types';
 
 // Export Toornament functionality
-export { convertData, toornament };
+export { convertData };

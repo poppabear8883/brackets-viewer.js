@@ -83,6 +83,8 @@ See the [full documentation](https://drarig29.github.io/brackets-docs/reference/
 
 ### Using Toornament API Data
 
+The Toornament functionality is fully integrated into the main codebase, providing seamless support for Toornament API data.
+
 You can directly use data from the Toornament API:
 
 ```js
@@ -113,7 +115,7 @@ window.bracketsViewer.render({
 When using as an ES module:
 
 ```js
-import { BracketsViewer, convertData, toornament } from 'brackets-viewer';
+import { BracketsViewer, convertData } from 'brackets-viewer';
 
 // Create a viewer instance
 const viewer = new BracketsViewer();
@@ -124,6 +126,17 @@ const convertedData = convertData(toornamentData);
 // Or use the renderToornament method directly
 viewer.renderToornament(toornamentData, config);
 ```
+
+#### Converting Toornament Data with Node.js
+
+If you need to convert Toornament data to brackets-viewer format in a Node.js environment, you can use the provided utility script:
+
+1. Build the project first: `npm run build`
+2. Create an `input` directory and place your Toornament data in a file named `input/toornament.json`
+3. Run the conversion script: `node scripts/convert-toornament.js`
+4. The converted data will be saved to `output/db.json` and `output/mappings.json`
+
+The script will automatically handle the conversion process and save the results to the output files.
 
 ## Demos
 
