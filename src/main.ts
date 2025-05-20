@@ -41,7 +41,10 @@ export class BracketsViewer {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    private _onMatchClick: MatchClickCallback = (match: MatchWithMetadata): void => { };
+    private _onMatchClick: MatchClickCallback = (match: MatchWithMetadata): void => {
+        console.log('Match clicked:', match);
+        console.log('Match metadata:', match.metadata);
+    };
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private _onMatchLabelClick: MatchClickCallback = (match: MatchWithMetadata): void => { };
@@ -115,7 +118,10 @@ export class BracketsViewer {
                 .map(match => {
                     // Create a new metadata object that preserves original_match_id
                     const existingMetadata = match.metadata as Record<string, unknown> || {};
-                    return {
+                    console.log('Processing match in render:', match);
+                    console.log('Existing metadata:', existingMetadata);
+
+                    const processedMatch = {
                         ...match,
                         metadata: {
                             ...existingMetadata,
@@ -123,6 +129,11 @@ export class BracketsViewer {
                             games: data.matchGames.filter(game => game.parent_id === match.id),
                         },
                     };
+
+                    console.log('Processed match:', processedMatch);
+                    console.log('Processed metadata:', processedMatch.metadata);
+
+                    return processedMatch;
                 }),
         }));
 
@@ -135,7 +146,7 @@ export class BracketsViewer {
 
     /**
      * Updates the results of an existing match.
-     * 
+     *
      * @param match The match to update.
      */
     public updateMatch(match: Match): void {
@@ -164,7 +175,7 @@ export class BracketsViewer {
 
     /**
      * Renders data from Toornament API.
-     * 
+     *
      * @param data The data from Toornament API.
      * @param config An optional configuration for the viewer.
      */
@@ -173,7 +184,11 @@ export class BracketsViewer {
         stages: ToornamentStage[];
         matches: ToornamentMatch[];
     }, config?: Partial<Config>): Promise<void> {
+        console.log('Original Toornament data:', data);
         const convertedData = convertData(data);
+        console.log('Converted data:', convertedData);
+        console.log('Converted matches with metadata:', convertedData.database.match);
+
         await this.render({
             stages: convertedData.database.stage,
             matches: convertedData.database.match,
@@ -184,7 +199,7 @@ export class BracketsViewer {
 
     /**
      * Adds a locale to the available i18n bundles.
-     * 
+     *
      * @param name Name of the locale.
      * @param locale Contents of the locale.
      */
@@ -382,7 +397,7 @@ export class BracketsViewer {
 
     /**
      * Returns information about the final group in double elimination.
-     * 
+     *
      * @param matchesByGroup A list of matches for each group.
      */
     private getFinalInfoDoubleElimination(matchesByGroup: MatchWithMetadata[][]): {
@@ -629,7 +644,11 @@ export class BracketsViewer {
     private createMatch(match: MatchWithMetadata | MatchGameWithMetadata, propagateHighlight: boolean): HTMLElement {
         const matchContainer = dom.createMatchContainer(match);
         const opponents = isMatch(match)
-            ? dom.createOpponentsContainer(() => this._onMatchClick(match))
+            ? dom.createOpponentsContainer(() => {
+                console.log('Match before click callback:', match);
+                console.log('Match metadata before click callback:', match.metadata);
+                this._onMatchClick(match);
+              })
             : dom.createOpponentsContainer();
 
         if (isMatch(match) && match.status >= Status.Completed)
