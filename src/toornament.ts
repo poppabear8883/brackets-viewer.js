@@ -266,7 +266,7 @@ export function convertData(data: {
                 participants[opponent2.id.toString()] = opponent2;
         }
 
-        db.match.push({
+        const newMatch = {
             id: matchId(match.id),
             stage_id: stageId(match.stage_id),
             group_id: groupId(match.group_id),
@@ -279,7 +279,12 @@ export function convertData(data: {
             metadata: {
                 original_match_id: match.id,
             },
-        });
+        };
+
+        console.log('Created match with original_match_id:', match.id);
+        console.log('Match metadata:', newMatch.metadata);
+
+        db.match.push(newMatch);
     }
 
     Object.values(participants).forEach(participant => db.participant.push(participant));
