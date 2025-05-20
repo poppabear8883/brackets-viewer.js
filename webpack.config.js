@@ -64,6 +64,11 @@ const esmConfig = {
     entry: {
         'brackets-viewer.esm': './src/index.ts',
     },
+    plugins: [
+        new MiniCssExtractPlugin({
+            filename: 'brackets-viewer.min.css',
+        }),
+    ],
     experiments: {
         outputModule: true,
     },
