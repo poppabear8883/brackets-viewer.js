@@ -1,0 +1,13 @@
+import { InMemoryDatabase } from 'brackets-memory-db';
+import { BracketsManager } from 'brackets-manager';
+import { BracketsViewer } from './main';
+import { convertData } from './toornament';
+declare const bracketsViewer: BracketsViewer;
+declare const inMemoryDatabase: InMemoryDatabase;
+declare const bracketsManager: BracketsManager;
+export default bracketsViewer;
+export { BracketsViewer };
+export { ToI18nKey } from './lang';
+export { Config, MatchClickCallback, Placement, ViewerData, ParticipantImage, RoundNameInfo, MatchWithMetadata, Connection, ConnectionType, OriginHint, } from './types';
+export { convertData };
+export { inMemoryDatabase, bracketsManager };
