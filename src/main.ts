@@ -41,10 +41,7 @@ export class BracketsViewer {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    private _onMatchClick: MatchClickCallback = (match: MatchWithMetadata): void => {
-        console.log('Match clicked:', match);
-        console.log('Match metadata:', match.metadata);
-    };
+    private _onMatchClick: MatchClickCallback = (match: MatchWithMetadata): void => { };
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private _onMatchLabelClick: MatchClickCallback = (match: MatchWithMetadata): void => { };
@@ -118,10 +115,7 @@ export class BracketsViewer {
                 .map(match => {
                     // Create a new metadata object that preserves original_match_id
                     const existingMetadata = match.metadata as Record<string, unknown> || {};
-                    console.log('Processing match in render:', match);
-                    console.log('Existing metadata:', existingMetadata);
-
-                    const processedMatch = {
+                    return {
                         ...match,
                         metadata: {
                             ...existingMetadata,
@@ -129,11 +123,6 @@ export class BracketsViewer {
                             games: data.matchGames.filter(game => game.parent_id === match.id),
                         },
                     };
-
-                    console.log('Processed match:', processedMatch);
-                    console.log('Processed metadata:', processedMatch.metadata);
-
-                    return processedMatch;
                 }),
         }));
 
@@ -184,11 +173,7 @@ export class BracketsViewer {
         stages: ToornamentStage[];
         matches: ToornamentMatch[];
     }, config?: Partial<Config>): Promise<void> {
-        console.log('Original Toornament data:', data);
         const convertedData = convertData(data);
-        console.log('Converted data:', convertedData);
-        console.log('Converted matches with metadata:', convertedData.database.match);
-
         await this.render({
             stages: convertedData.database.stage,
             matches: convertedData.database.match,
@@ -644,11 +629,7 @@ export class BracketsViewer {
     private createMatch(match: MatchWithMetadata | MatchGameWithMetadata, propagateHighlight: boolean): HTMLElement {
         const matchContainer = dom.createMatchContainer(match);
         const opponents = isMatch(match)
-            ? dom.createOpponentsContainer(() => {
-                console.log('Match before click callback:', match);
-                console.log('Match metadata before click callback:', match.metadata);
-                this._onMatchClick(match);
-              })
+            ? dom.createOpponentsContainer(() => this._onMatchClick(match))
             : dom.createOpponentsContainer();
 
         if (isMatch(match) && match.status >= Status.Completed)
