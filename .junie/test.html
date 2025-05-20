@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Brackets Viewer Test</title>
+    <link rel="stylesheet" href="../dist/brackets-viewer.min.css" />
+    <script type="text/javascript" src="../dist/brackets-viewer.min.js"></script>
+</head>
+<body>
+    <div id="test-brackets" class="brackets-viewer"></div>
+
+    <script>
+        // Simple test data for a single elimination tournament with 4 participants
+        const testData = {
+            participants: [
+                { id: 1, name: "Team A" },
+                { id: 2, name: "Team B" },
+                { id: 3, name: "Team C" },
+                { id: 4, name: "Team D" }
+            ],
+            stage: [
+                { id: 1, name: "Test Tournament", type: "single_elimination" }
+            ],
+            match: [
+                // Semi-finals
+                { id: 1, stage_id: 1, group_id: 1, round_id: 1, number: 1, status: 3, opponent1: { id: 1, score: 2 }, opponent2: { id: 2, score: 1 } },
+                { id: 2, stage_id: 1, group_id: 1, round_id: 1, number: 2, status: 3, opponent1: { id: 3, score: 0 }, opponent2: { id: 4, score: 2 } },
+                // Final
+                { id: 3, stage_id: 1, group_id: 1, round_id: 2, number: 1, status: 3, opponent1: { id: 1, score: 3 }, opponent2: { id: 4, score: 1 } }
+            ],
+            match_game: []
+        };
+
+        // Render the brackets
+        window.bracketsViewer.render({
+            stages: testData.stage,
+            matches: testData.match,
+            matchGames: testData.match_game,
+            participants: testData.participants
+        }, {
+            selector: '#test-brackets',
+            onMatchClick: match => console.log('Match clicked:', match)
+        });
+    </script>
+</body>
+</html>

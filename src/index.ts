@@ -3,11 +3,15 @@ import { BracketsManager } from 'brackets-manager';
 import { BracketsViewer } from './main';
 import { convertData } from './toornament';
 
-window.bracketsViewer = new BracketsViewer();
-window.inMemoryDatabase = new InMemoryDatabase();
-window.bracketsManager = new BracketsManager(window.inMemoryDatabase);
-window.convertData = convertData;
+// Create instances for export
+const bracketsViewer = new BracketsViewer();
+const inMemoryDatabase = new InMemoryDatabase();
+const bracketsManager = new BracketsManager(inMemoryDatabase);
 
+// Export the main functionality
+export default bracketsViewer;
+
+// Export classes and functions for advanced usage
 export { BracketsViewer };
 export { ToI18nKey } from './lang';
 export {
@@ -25,3 +29,12 @@ export {
 
 // Export Toornament functionality
 export { convertData };
+export { inMemoryDatabase, bracketsManager };
+
+// For backward compatibility with window-based usage
+if (typeof window !== 'undefined') {
+    window.bracketsViewer = bracketsViewer;
+    window.inMemoryDatabase = inMemoryDatabase;
+    window.bracketsManager = bracketsManager;
+    window.convertData = convertData;
+}
