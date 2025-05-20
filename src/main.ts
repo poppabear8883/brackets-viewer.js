@@ -308,6 +308,7 @@ export class BracketsViewer {
             roundsContainer.append(this.createMatch({
                 ...match,
                 metadata: {
+                    ...match.metadata,
                     label: lang.t('match-label.default', { matchNumber: ++matchNumber }),
                     stageType: stage.type,
                     games: [],
