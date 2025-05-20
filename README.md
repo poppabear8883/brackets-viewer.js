@@ -18,6 +18,7 @@ It contains all the logic needed to display tournaments.
 - Display participant images next to their name ([example](https://github.com/Drarig29/brackets-viewer.js/blob/668aae1ed9db41ab21665459635cd6b71cad247c/demo/with-api.html#L34-L38))
 - Do actions when a match is clicked ([example](https://github.com/Drarig29/brackets-viewer.js/blob/ed31fc4fc43336d3543411f802a8b1d9d592d467/demo/with-api.html#L53), [feature request](https://github.com/Drarig29/brackets-viewer.js/discussions/80))
 - Custom round names: do you want to say "Semi Finals" instead of "Round 2"? ([example](https://github.com/Drarig29/brackets-viewer.js/blob/ed31fc4fc43336d3543411f802a8b1d9d592d467/demo/with-api.html#L46-L52), [feature request](https://github.com/Drarig29/brackets-viewer.js/discussions/93))
+- Direct support for Toornament API data
 
 ![Screenshot](screenshot.png)
 
@@ -79,6 +80,50 @@ window.bracketsViewer.render({
 ```
 
 See the [full documentation](https://drarig29.github.io/brackets-docs/reference/viewer/interfaces/Config.html) for the `render()` configuration.
+
+### Using Toornament API Data
+
+You can directly use data from the Toornament API:
+
+```js
+// Data from Toornament API
+const toornamentData = {
+  tournament_id: 123456,
+  stages: [/* Array of Toornament stages */],
+  matches: [/* Array of Toornament matches */]
+};
+
+// Render using Toornament data
+window.bracketsViewer.renderToornament(toornamentData, {
+  selector: '#example',
+  clear: true,
+});
+
+// Alternatively, you can convert the data manually
+// The convertData function is available on the window object
+const convertedData = window.convertData(toornamentData);
+window.bracketsViewer.render({
+  stages: convertedData.database.stage,
+  matches: convertedData.database.match,
+  matchGames: convertedData.database.match_game,
+  participants: convertedData.database.participant,
+});
+```
+
+When using as an ES module:
+
+```js
+import { BracketsViewer, convertData, toornament } from 'brackets-viewer';
+
+// Create a viewer instance
+const viewer = new BracketsViewer();
+
+// Convert Toornament data
+const convertedData = convertData(toornamentData);
+
+// Or use the renderToornament method directly
+viewer.renderToornament(toornamentData, config);
+```
 
 ## Demos
 

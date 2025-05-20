@@ -5,6 +5,7 @@ import * as dom from './dom';
 import * as lang from './lang';
 import { Locale } from './lang';
 import { helpers } from 'brackets-manager';
+import { convertData, toornament } from './toornament';
 import {
     Config,
     OriginHint,
@@ -154,6 +155,26 @@ export class BracketsViewer {
      */
     public setParticipantImages(images: ParticipantImage[]): void {
         this.participantImages = images;
+    }
+
+    /**
+     * Renders data from Toornament API.
+     * 
+     * @param data The data from Toornament API.
+     * @param config An optional configuration for the viewer.
+     */
+    public async renderToornament(data: {
+        tournament_id: number,
+        stages: toornament.Stage[];
+        matches: toornament.Match[];
+    }, config?: Partial<Config>): Promise<void> {
+        const convertedData = convertData(data);
+        await this.render({
+            stages: convertedData.database.stage,
+            matches: convertedData.database.match,
+            matchGames: convertedData.database.match_game,
+            participants: convertedData.database.participant,
+        }, config);
     }
 
     /**

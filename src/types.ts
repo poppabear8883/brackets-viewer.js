@@ -4,6 +4,7 @@ import { InMemoryDatabase } from 'brackets-memory-db';
 import { BracketsViewer } from './main';
 import { BracketsManager } from 'brackets-manager';
 import { ToI18nKey, Translator } from './lang';
+import { ConvertResult, toornament } from './toornament/types';
 
 declare global {
     interface Window {
@@ -12,6 +13,11 @@ declare global {
         bracketsManager: BracketsManager,
         stageFormCreator: (configuration: FormConfiguration, submitCallable: CallbackFunction) => void,
         updateFormCreator: (configuration: FormConfiguration, changeCallable: CallbackFunction) => void,
+        convertData: (data: {
+            tournament_id: number,
+            stages: toornament.Stage[];
+            matches: toornament.Match[];
+        }) => ConvertResult,
     }
 
     interface HTMLElement {
@@ -36,6 +42,8 @@ export interface MatchWithMetadata extends Match {
         stageType: StageType
         /** The list of child games of this match. */
         games: MatchGame[]
+        /** The original match ID from Toornament. */
+        original_match_id?: string
 
         // Positional information
 
