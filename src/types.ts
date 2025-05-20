@@ -1,10 +1,10 @@
-import { Stage, Match, MatchGame, Participant, GroupType, FinalType, Id, StageType } from 'brackets-model';
+import { Stage, MatchGame, Participant, GroupType, FinalType, Id, StageType } from 'brackets-model';
 import { CallbackFunction, FormConfiguration } from './form';
 import { InMemoryDatabase } from 'brackets-memory-db';
 import { BracketsViewer } from './main';
 import { BracketsManager } from 'brackets-manager';
 import { ToI18nKey, Translator } from './lang';
-import { ConvertResult, ToornamentStage, ToornamentMatch } from './toornament';
+import { ConvertResult, ToornamentStage, ToornamentMatch, Match } from './toornament';
 
 declare global {
     interface Window {

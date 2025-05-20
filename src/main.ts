@@ -1,11 +1,11 @@
 import './style.scss';
-import { Participant, Match, ParticipantResult, Stage, Status, GroupType, FinalType, Id } from 'brackets-model';
+import { Participant, ParticipantResult, Stage, Status, GroupType, FinalType, Id } from 'brackets-model';
 import { splitBy, getRanking, getOriginAbbreviation, findRoot, completeWithBlankMatches, sortBy, isMatchGame, isMatch, splitByWithLeftovers } from './helpers';
 import * as dom from './dom';
 import * as lang from './lang';
 import { Locale } from './lang';
 import { helpers } from 'brackets-manager';
-import { convertData, ToornamentStage, ToornamentMatch } from './toornament';
+import { convertData, ToornamentStage, ToornamentMatch, Match } from './toornament';
 import {
     Config,
     OriginHint,
@@ -112,13 +112,18 @@ export class BracketsViewer {
             stages: [stage],
             matches: data.matches
                 .filter(match => match.stage_id === stage.id)
-                .map(match => ({
-                    ...match,
-                    metadata: {
-                        stageType: stage.type,
-                        games: data.matchGames.filter(game => game.parent_id === match.id),
-                    },
-                })),
+                .map(match => {
+                    // Create a new metadata object that preserves original_match_id
+                    const existingMetadata = match.metadata as Record<string, unknown> || {};
+                    return {
+                        ...match,
+                        metadata: {
+                            ...existingMetadata,
+                            stageType: stage.type,
+                            games: data.matchGames.filter(game => game.parent_id === match.id),
+                        },
+                    };
+                }),
         }));
 
         const target = findRoot(config?.selector);

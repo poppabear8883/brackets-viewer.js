@@ -4,7 +4,7 @@ import { Participant, ParticipantResult, RoundRobinMode, StageSettings, StageTyp
 // Extend the Match interface to include metadata
 export interface Match extends BaseMatch {
     metadata?: {
-        original_match_id: string;
+        original_match_id?: string;
         [key: string]: any;
     };
 }
