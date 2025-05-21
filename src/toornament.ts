@@ -1,4 +1,9 @@
-import { Participant, ParticipantResult, RoundRobinMode, StageSettings, StageType, Status, GrandFinalType, Match as BaseMatch, MatchGame, Result, Stage } from 'brackets-model';
+import { Participant as BaseParticipant, ParticipantResult, RoundRobinMode, StageSettings, StageType, Status, GrandFinalType, Match as BaseMatch, MatchGame, Result, Stage } from 'brackets-model';
+
+// Extend the Participant interface to include custom fields
+export interface Participant extends BaseParticipant {
+    custom_user_identifier?: string;
+}
 
 // Types from toornament/types.ts
 // Extend the Match interface to include metadata
@@ -48,6 +53,8 @@ export interface ToornamentStage {
 export interface ToornamentParticipant {
     id: string;
     name: string;
+    custom_user_identifier?: string;
+    custom_fields?: any[];
 }
 
 export interface ToornamentOpponent {
@@ -152,6 +159,7 @@ export function convertParticipant(id: number, participant: ToornamentParticipan
         id,
         name: participant.name,
         tournament_id: 0,
+        custom_user_identifier: participant.custom_user_identifier,
     };
 }
 
@@ -278,6 +286,13 @@ export function convertData(data: {
             opponent2: convertParticipantResult(id2, findSourcePosition(match.opponents[1]), match.opponents[1]),
             metadata: {
                 original_match_id: match.id,
+                opponent1_id: match.opponents[0].participant?.id,
+                opponent1_name: match.opponents[0].participant?.name,
+                opponent1_custom_user_identifier: match.opponents[0].participant?.custom_user_identifier,
+                opponent2_id: match.opponents[1].participant?.id,
+                opponent2_name: match.opponents[1].participant?.name,
+                opponent2_custom_user_identifier: match.opponents[1].participant?.custom_user_identifier,
+                original_match: match, // Include the entire original match object
             },
         });
     }
