@@ -1,4 +1,7 @@
-import { Participant, ParticipantResult, RoundRobinMode, StageSettings, StageType, Status, GrandFinalType, Match as BaseMatch, MatchGame, Result, Stage } from 'brackets-model';
+import { Participant as BaseParticipant, ParticipantResult, RoundRobinMode, StageSettings, StageType, Status, GrandFinalType, Match as BaseMatch, MatchGame, Result, Stage } from 'brackets-model';
+export interface Participant extends BaseParticipant {
+    custom_user_identifier?: string;
+}
 export interface Match extends BaseMatch {
     metadata?: {
         original_match_id?: string;
@@ -39,6 +42,8 @@ export interface ToornamentStage {
 export interface ToornamentParticipant {
     id: string;
     name: string;
+    custom_user_identifier?: string;
+    custom_fields?: any[];
 }
 export interface ToornamentOpponent {
     number: number;
